@@ -60,6 +60,15 @@ class QuoteBot:
                 res += f"{name.title()} - {ct}"
         return res
             
+    def help_text(self):
+        res = self.random_greeting() + "\n\n"
+        res += "`$help`: gets this help menu\n"
+        res += "`$add <name>`: adds one (1) tally to <name> for current month\n"
+        res += "`$remove <name>`: removes one (1) tally to <name> for current month\n"
+        res += "`$counts <month> <year>`: gets counts for <month> of <year>\n"
+        res += "`$tallies <month> <year>`: gets tallies and ranks for <month> and <year>\n"
+        res += "`$dumps`: dumps database"
+        return res
 
     def load_greetings(self, file=GREETINGS):
         with open(file, 'r') as f:
@@ -122,7 +131,7 @@ class QuoteBot:
                 month = parts[1]
                 year = parts[2]
                 return month.isnumeric() and year.isnumeric()
-        elif message.startswith("$dump"):
+        elif message.startswith("$dump") or message.startswith("$help"):
             return True
         elif message.startswith("$add") or message.startswith("$remove"):
             return len(parts) >= 2

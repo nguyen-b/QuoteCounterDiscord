@@ -38,7 +38,9 @@ async def on_ready():
 async def on_message(message):
     if message.channel.id == CH_ID and message.author.id != client.user.id:
         dt = message.created_at
-        if message.content.startswith('$counts'):
+        if message.content.startswith('$help'):
+            await message.channel.send(qb.help_text())
+        elif message.content.startswith('$counts'):
             params = qb.parse_params(message.content)
             if params:
                 counts = qb.counts(params[1], params[2])
