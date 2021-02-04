@@ -20,7 +20,7 @@ EMOJI = "\U0001F6AB"
 @tasks.loop(hours=1)
 async def monthly(channel):
         date = datetime.now(TZ)
-        if date.day == 4 and date.hour == 15:
+        if date.day == 1 and date.hour == 0:
             last_month = date.month - 1
             curr_year = date.year
             res = qb.monthly_tally(last_month, curr_year)
