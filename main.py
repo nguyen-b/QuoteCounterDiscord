@@ -1,10 +1,11 @@
-import discord
+from datetime import datetime
 import os
-import pytz
 import re
 
-from datetime import datetime
+import discord
 from discord.ext import tasks
+import pytz
+
 from quote_bot import QuoteBot
 
 
@@ -16,6 +17,7 @@ client = discord.Client()
 qb = QuoteBot(os.getenv("DB"), os.getenv('GREET'))
 
 EMOJI = "\U0001F6AB"
+
 
 @tasks.loop(hours=1)
 async def monthly(channel):
@@ -33,6 +35,7 @@ async def on_ready():
 
     channel = client.get_channel(CH_ID)
     monthly.start(channel)
+
 
 @client.event
 async def on_message(message):

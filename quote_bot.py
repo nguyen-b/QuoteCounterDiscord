@@ -1,7 +1,7 @@
+from collections import defaultdict
 import pprint
 import random
 
-from collections import defaultdict
 from db import AppDatabase
 
 
@@ -93,7 +93,6 @@ class QuoteBot:
             res += f"No Data for **Year {year}**"
         
         return res
-        
 
     @staticmethod
     def parse_params(message):
@@ -118,7 +117,6 @@ class QuoteBot:
                 ranked[rank_ct] = []
             ranked[rank_ct].append(data)
         return ranked
-
 
     def remove_quote(self, name, month, year):
         self.database.remove_quote(name, month, year)

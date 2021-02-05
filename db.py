@@ -1,5 +1,4 @@
 from collections import defaultdict
-
 import json
 import os
 
@@ -18,12 +17,6 @@ class AppDatabase:
         year = str(year)
         month = str(month)
         name = str(name)
-        # if year not in self.data:
-        #     self.data[year] = {}
-        # if month not in self.data[year]:
-        #     self.data[year][month] = {}
-        # if name not in self.data[year][month]:
-        #     self.data[year][month][name] = 0
         self.data[year][month][name] += amount
         self.save_db()
 
