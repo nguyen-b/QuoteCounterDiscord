@@ -50,9 +50,9 @@ async def on_message(message):
 
 @bot.command(name='add')
 async def _add(ctx, name):
-    dt = ctx.created_at
+    dt = ctx.message.created_at
     qb.add_quote(name.lower(), dt.month, dt.year)
-    await ctx.add_reaction(EMOJI)
+    await ctx.message.add_reaction(EMOJI)
 
 
 @bot.command(name='counts')
@@ -63,7 +63,7 @@ async def _counts(ctx, month, year):
 
 
 @bot.command(name='dump')
-async def dump(ctx):
+async def _dump(ctx):
     await command_response(ctx, qb.dump())
 
 
@@ -74,9 +74,9 @@ async def _help(ctx):
 
 @bot.command(name='remove')
 async def _remove(ctx, name):
-    dt = ctx.created_at
+    dt = ctx.message.created_at
     qb.remove_quote(name.lower(), dt.month, dt.year)
-    await ctx.add_reaction(EMOJI)
+    await ctx.message.add_reaction(EMOJI)
 
 
 @bot.command(name='tally')
