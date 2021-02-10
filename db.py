@@ -22,8 +22,8 @@ class AppDatabase:
         self.adjust_quote(name, month, year, 1)
 
     def adjust_quote(self, name, month, year, amount):
-        year = str(year)
-        month = str(month)
+        year = str(int(year))
+        month = str(int(month))
         name = str(name)
         self.data[year][month][name] += amount
         self.save_db()
