@@ -26,6 +26,9 @@ class QuoteBot:
     def adjust_quote(self, name, month, year, amount):
         self.database.adjust_quote(name, month, year, amount)
 
+    def clear(self, month, year):
+        self.database.clear(month, year)
+
     def counts(self, month, year):
         month = str(int(month))
         year = str(int(year))

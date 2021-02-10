@@ -62,6 +62,13 @@ async def _adjust(ctx, name, amount=1, month=-1, year=-1):
         await ctx.message.add_reaction(EMOJI)
 
 
+@bot.command(name='clear')
+async def _clear(ctx, month, year):
+    if month.isnumeric() and year.isnumeric():
+        qb.clear(month, year)
+        await ctx.message.add_reaction(EMOJI)
+
+
 @bot.command(name='counts')
 async def _counts(ctx, month, year):
     if month.isnumeric() and year.isnumeric():

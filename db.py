@@ -28,6 +28,13 @@ class AppDatabase:
         self.data[year][month][name] += amount
         self.save_db()
 
+    def clear(self, month, year):
+        year = str(int(year))
+        month = str(int(month))
+        if month in self.data[year]:
+            del self.data[year][month]
+        self.save_db()
+
     def get_counts(self, month, year):
         month = str(int(month))
         year = str(int(year))
