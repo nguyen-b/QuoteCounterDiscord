@@ -11,7 +11,12 @@ class AppDatabase:
         self.data = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
         data_file = self.load_db(self.file)
         if data_file:
-            self.data.update(data_file)
+            nd = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+            for year, months in data_file.items():
+                for month, names in months.items():
+                    for name, ct in names.items():
+                        nd[year][month][name] = ct
+            self.data = nd
 
     def add_quote(self, name, month, year):
         self.adjust_quote(name, month, year, 1)
