@@ -8,7 +8,10 @@ DEFAULT = "database.json"
 class AppDatabase:
     def __init__(self, file=DEFAULT):
         self.file = file
-        self.load_db(self.file)
+        self.data = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+        data_file = self.load_db(self.file)
+        if data_file:
+            self.data.update(data_file)
 
     def add_quote(self, name, month, year):
         self.adjust_quote(name, month, year, 1)
@@ -27,13 +30,11 @@ class AppDatabase:
             return self.data[year][month]
 
     def load_db(self, file=DEFAULT):
-        self.data = defaultdict(lambda: defaultdict(int))
         if os.path.exists(file):
             with open(file, 'r') as f:
                 if os.stat(file).st_size > 0:
-                    self.data = json.load(f)
-                else:
-                    self.data = {}
+                    return json.load(f)
+
         else:
             with open(file, 'w+') as f:
                 pass
