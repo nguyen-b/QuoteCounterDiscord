@@ -66,7 +66,7 @@ class QuoteBot:
         res += "`$add <name>`: adds one (1) tally to <name> for current month\n"
         res += "`$remove <name>`: removes one (1) tally to <name> for current month\n"
         res += "`$counts <month> <year>`: gets counts for <month> of <year>\n"
-        res += "`$tallies <month> <year>`: gets tallies and ranks for <month> and <year>\n"
+        res += "`$tally <month> <year>`: gets tallies and ranks for <month> and <year>\n"
         res += "`$dumps`: dumps database"
         return res
 
