@@ -1,6 +1,9 @@
 from collections import defaultdict
+import datetime
 import pprint
 import random
+
+import pytz
 
 from db import AppDatabase
 
@@ -19,6 +22,9 @@ class QuoteBot:
 
     def add_quote(self, name, month, year):
         self.database.add_quote(name, month, year)
+
+    def adjust_quote(self, name, month, year, amount):
+        self.database.adjust_quote(name, month, year, amount)
 
     def counts(self, month, year):
         month = str(int(month))
@@ -57,10 +63,13 @@ class QuoteBot:
                     res += ":third_place: "
                 res += f"{name.title()} - {ct}"
         return res
-            
-    def help_text(self):
+
+    @staticmethod
+    def help_text():
         res = "`$help`: gets this help menu\n"
         res += "`$add <name>`: adds one (1) tally to <name> for current month\n"
+        res += "`$adjust <name> [amount] [<month> <year>]`: adjust tally for <name> by [amount] for [<month> <year>] "
+        res += "Default amount is one (1). Default month and year is current date.\n"
         res += "`$remove <name>`: removes one (1) tally to <name> for current month\n"
         res += "`$counts <month> <year>`: gets counts for <month> of <year>\n"
         res += "`$tally <month> <year>`: gets tallies and ranks for <month> and <year>\n"
@@ -71,6 +80,22 @@ class QuoteBot:
         with open(file, 'r') as f:
             for line in f:
                 self.greetings.append(line.rstrip())
+
+    @staticmethod
+    def month_start(month, year, tz):
+        m = int(month)
+        y = int(year)
+        dt = datetime.datetime(year=y, month=m, day=1, hour=0, minute=0, second=0, microsecond=0)
+        start = dt.astimezone(tz)
+        return start.astimezone(pytz.UTC).replace(tzinfo=None)
+
+    @staticmethod
+    def month_end(month, year, tz):
+        m = int(month)
+        y = int(year)
+        dt = datetime.datetime(year=y, month=m+1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        end = dt.astimezone(tz)
+        return end.astimezone(pytz.UTC).replace(tzinfo=None)
 
     def monthly_tally(self, month, year):
         res = ""
