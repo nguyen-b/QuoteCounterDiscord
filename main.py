@@ -2,8 +2,7 @@ from datetime import datetime
 import os
 import re
 
-import discord
-from discord.ext import tasks
+from discord.ext import tasks, commands
 import pytz
 
 from quote_bot import QuoteBot
@@ -13,7 +12,8 @@ CH_ID = int(os.getenv('CH_ID'))
 PATTERN = re.compile(r'(?:\*\*(.*)\*\*)+')
 TZ = pytz.timezone(os.getenv('TZ'))
 
-client = discord.Client()
+bot = commands.Bot(command_prefix='$')
+bot.remove_command("help")
 qb = QuoteBot(os.getenv("DB"), os.getenv('GREET'))
 
 EMOJI = "\U0001F6AB"
@@ -29,48 +29,60 @@ async def monthly(channel):
             await channel.send(res)
 
 
-@client.event
+@bot.event
 async def on_ready():
-    await client.wait_until_ready()
+    await bot.wait_until_ready()
 
-    channel = client.get_channel(CH_ID)
+    channel = bot.get_channel(CH_ID)
     monthly.start(channel)
 
 
-@client.event
+@bot.event
 async def on_message(message):
-    if message.channel.id == CH_ID and message.author.id != client.user.id:
+    if message.channel.id == CH_ID and message.author.id != bot.user.id:
         dt = message.created_at
-        if message.content.startswith('$help'):
-            await message.channel.send(qb.help_text())
-        elif message.content.startswith('$counts'):
-            params = qb.parse_params(message.content)
-            if params:
-                counts = qb.counts(params[1], params[2])
-                await message.channel.send(counts)
-        elif message.content.startswith('$tally'):
-            params = qb.parse_params(message.content)
-            if params:
-                tally = qb.monthly_tally(params[1], params[2])
-                await message.channel.send(tally)
-        elif message.content.startswith('$dump'):
-            await message.channel.send(qb.dump())
-        elif message.content.startswith('$add'):
-            params = qb.parse_params(message.content)
-            if params:
-                name = params[1]
+        res = re.findall(PATTERN, message.content)
+        if res:
+            for name in res:
                 qb.add_quote(name.lower(), dt.month, dt.year)
-                await message.add_reaction(EMOJI)
-        elif message.content.startswith('$remove'):
-            params = qb.parse_params(message.content)
-            if params:
-                name = params[1]
-                qb.remove_quote(name.lower(), dt.month, dt.year)
-                await message.add_reaction(EMOJI)
-        else:
-            res = re.findall(PATTERN, message.content)
-            if res:
-                for name in res:
-                    qb.add_quote(name.lower(), dt.month, dt.year)
+        await bot.process_commands(message)
 
-client.run(os.getenv('TOKEN'))
+
+@bot.command(name='add')
+async def _add(ctx, name):
+    dt = ctx.created_at
+    qb.add_quote(name.lower(), dt.month, dt.year)
+    await ctx.add_reaction(EMOJI)
+
+
+@bot.command(name='counts')
+async def _counts(ctx, month, year):
+    if month.isnumeric() and year.isnumeric():
+        counts = qb.counts(month, year)
+        await ctx.channel.send(counts)
+
+
+@bot.command(name='dump')
+async def dump(ctx):
+    await ctx.channel.send(qb.dump())
+
+
+@bot.command(name='help')
+async def _help(ctx):
+    await ctx.channel.send(qb.help_text())
+
+
+@bot.command(name='remove')
+async def _remove(ctx, name):
+    dt = ctx.created_at
+    qb.remove_quote(name.lower(), dt.month, dt.year)
+    await ctx.add_reaction(EMOJI)
+
+
+@bot.command(name='tally')
+async def _tally(ctx, month, year):
+    if month.isnumeric() and year.isnumeric():
+        tally = qb.monthly_tally(month, year)
+        await ctx.channel.send(tally)
+
+bot.run(os.getenv('TOKEN'))
