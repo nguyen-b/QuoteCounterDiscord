@@ -29,7 +29,8 @@ class AppDatabase:
         if year in self.data and month in self.data[year]:
             return self.data[year][month]
 
-    def load_db(self, file=DEFAULT):
+    @staticmethod
+    def load_db(file=DEFAULT):
         if os.path.exists(file):
             with open(file, 'r') as f:
                 if os.stat(file).st_size > 0:
