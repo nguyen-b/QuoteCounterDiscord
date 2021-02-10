@@ -59,17 +59,17 @@ async def _add(ctx, name):
 async def _counts(ctx, month, year):
     if month.isnumeric() and year.isnumeric():
         counts = qb.counts(month, year)
-        await ctx.channel.send(counts)
+        await command_response(ctx, counts)
 
 
 @bot.command(name='dump')
 async def dump(ctx):
-    await ctx.channel.send(qb.dump())
+    await command_response(ctx, qb.dump())
 
 
 @bot.command(name='help')
 async def _help(ctx):
-    await ctx.channel.send(qb.help_text())
+    await command_response(ctx, qb.help_text())
 
 
 @bot.command(name='remove')
@@ -83,6 +83,13 @@ async def _remove(ctx, name):
 async def _tally(ctx, month, year):
     if month.isnumeric() and year.isnumeric():
         tally = qb.monthly_tally(month, year)
-        await ctx.channel.send(tally)
+        await command_response(ctx, tally)
+
+
+async def command_response(ctx, message):
+    res = qb.random_greeting() + "\n\n"
+    res += message
+    await ctx.channel.send(res)
+
 
 bot.run(os.getenv('TOKEN'))

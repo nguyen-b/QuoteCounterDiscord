@@ -24,17 +24,15 @@ class QuoteBot:
         month = str(int(month))
         year = str(int(year))
         counts = self.database.get_counts(month, year)
-        res = self.random_greeting() + "\n\n"
         if counts:
             res = f"**Counts for {self.MONTHS[int(month) - 1]} {year}**"
             res += self.format_counts(counts)
         else:
-            res += f"**No Data for {self.MONTHS[int(month) - 1]} {year}**"
+            res = f"**No Data for {self.MONTHS[int(month) - 1]} {year}**"
         return res
 
     def dump(self):
-        res = self.random_greeting() + "\n\n"
-        res += "**Database Dump**\n"
+        res = "**Database Dump**\n"
         res += pprint.pformat(self.database.data, indent=4)
         return res
         
@@ -61,8 +59,7 @@ class QuoteBot:
         return res
             
     def help_text(self):
-        res = self.random_greeting() + "\n\n"
-        res += "`$help`: gets this help menu\n"
+        res = "`$help`: gets this help menu\n"
         res += "`$add <name>`: adds one (1) tally to <name> for current month\n"
         res += "`$remove <name>`: removes one (1) tally to <name> for current month\n"
         res += "`$counts <month> <year>`: gets counts for <month> of <year>\n"
@@ -76,7 +73,7 @@ class QuoteBot:
                 self.greetings.append(line.rstrip())
 
     def monthly_tally(self, month, year):
-        res = self.random_greeting() + "\n\n"
+        res = ""
         ct = self.database.get_counts(month, year)
         if ct:
             res += f"Tallies for **{self.MONTHS[int(month) - 1]} {year}**"
